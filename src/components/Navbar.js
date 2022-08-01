@@ -32,7 +32,7 @@ const Nav = styled.div`
   top: 0;
   width: 100%;
   height: 80px;
-  background-color: black;
+  background-color: #1b1c1c;
   /* display: grid;
   grid-template-columns: 60px 1fr 2fr 1.5fr 60px; */
   position: sticky;
@@ -59,7 +59,7 @@ const WalletButton = styled.button`
   font-size: 18px;
   border: none;
   border-radius: 5px;
-  background-color: grey;
+  background-color: #1f99f0;
   color: white;
   cursor: pointer;
 `;

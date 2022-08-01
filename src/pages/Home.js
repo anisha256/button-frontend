@@ -1,15 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { approve, buttonClicked, getPrize } from '../utils/Web3';
 
 const Home = () => {
+  const [prize, setPrize] = useState(0);
+  const fetchData = () => {
+    getPrize()
+      .then((prize) => {
+        setPrize(prize / 10 ** 18);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log(prize);
+  };
+  useEffect(() => {
+    fetchData();
+    approve();
+  }, []);
+
   return (
     <Container>
       <Content>
         <h1>Button</h1>
         <p>COUNT DOWN</p>
+        <h2>APPROVE</h2>
+        <ApproveButton onClick={() => approve()}>Approve</ApproveButton>
+        <p>Prize Accumulated</p>
+        <span>{prize} TT</span>
+
         <Div>
           <ButtonDiv>
-            <Button></Button>
+            <Button onClick={() => buttonClicked()}></Button>
           </ButtonDiv>
         </Div>
         <p>
@@ -48,6 +70,9 @@ const Content = styled.section`
     font-size: 60px;
     color: lightgray;
   }
+  h2 {
+    padding: 20px 0px;
+  }
 
   p {
     /* padding: 20px 0px; */
@@ -63,22 +88,35 @@ const Div = styled.div`
   margin-bottom: 20px;
 `;
 const ButtonDiv = styled.div`
-  height: 200px;
-  /* background-color: white; */
-  width: 200px;
+  height: 220px;
+  width: 220px;
+  border-radius: 50%;
+  border: 4px solid #1f99f0;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 const Button = styled.button`
   height: 180px;
-  background-color: blue;
+  background-color: #1f99f0;
   border-radius: 50%;
   width: 180px;
   border: none;
   /* font-size: 20px; */
   color: white;
   cursor: pointer;
+  &:hover {
+    background-color: grey;
+  }
+`;
+const ApproveButton = styled.button`
+  height: 40px;
+  background-color: #1f99f0;
+  width: 100px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
   &:hover {
     background-color: grey;
   }
