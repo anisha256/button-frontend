@@ -72,3 +72,10 @@ export const approve = async () => {
       from: selectedAccount,
     });
 };
+
+export const getNewCountdownEnd = async () => {
+  if (!isInitialized) {
+    await connectMetamask();
+  }
+  return cbContract.methods.newCountdownEnd().call();
+};

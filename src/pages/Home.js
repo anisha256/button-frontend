@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { approve, buttonClicked, getPrize } from '../utils/Web3';
+import {
+  approve,
+  buttonClicked,
+  getNewCountdownEnd,
+  getPrize,
+} from '../utils/Web3';
+import CountdownTimer from '../components/CountdownTimer';
 
 const Home = () => {
   const [prize, setPrize] = useState(0);
-  const fetchData = () => {
+  const [countdownEnd, setCountdownEnd] = useState();
+
+  const fetchData = async () => {
     getPrize()
       .then((prize) => {
         setPrize(prize / 10 ** 18);
@@ -12,26 +20,45 @@ const Home = () => {
       .catch((err) => {
         console.log(err);
       });
+
     console.log(prize);
+  };
+  const fetchDate = () => {
+    getNewCountdownEnd()
+      .then((countdownEnd) => {
+        setCountdownEnd(countdownEnd);
+        console.log(countdownEnd);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handleClick = async () => {
+    try {
+      await approve();
+      buttonClicked();
+    } catch (error) {}
   };
   useEffect(() => {
     fetchData();
-    approve();
+    fetchDate();
+    // approve();
   }, []);
 
   return (
     <Container>
       <Content>
         <h1>Button</h1>
-        <p>COUNT DOWN</p>
-        <h2>APPROVE</h2>
-        <ApproveButton onClick={() => approve()}>Approve</ApproveButton>
-        <p>Prize Accumulated</p>
-        <span>{prize} TT</span>
+        <h2>COUNT DOWN</h2>
+        <p>{new Date(parseInt(countdownEnd) * 1000).toLocaleString()}</p>
+        <CountdownTimer countdownEnd={countdownEnd} />
+
+        <h2>PRIZE ACCUMULATED</h2>
+        <h3>{prize} TT</h3>
 
         <Div>
           <ButtonDiv>
-            <Button onClick={() => buttonClicked()}></Button>
+            <Button onClick={() => handleClick()}></Button>
           </ButtonDiv>
         </Div>
         <p>
