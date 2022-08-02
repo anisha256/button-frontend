@@ -19,24 +19,24 @@ const Home = () => {
 
   let interval;
 
-  const fetchData = async () => {
+  const fetchPrize = () => {
     getPrize()
       .then((prize) => {
-        setPrize(prize / 10 ** 18);
+        setPrize(prize);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const fetchDate = async () => {
-    try {
-      const date = await getCountdownEnd();
-      setCountdownEnd(date);
-      console.log(countdownEnd);
-    } catch (error) {
-      console.log(error);
-    }
+  const fetchDate = () => {
+    getCountdownEnd()
+      .then((countdownEnd) => {
+        setCountdownEnd(countdownEnd);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleApprove = async () => {
@@ -52,12 +52,14 @@ const Home = () => {
 
   const startTimer = () => {
     const countDownDate = countdownEnd * 1000;
-    console.log('entered timer2', countDownDate);
+    // console.log('entered timer2', countDownDate);
+    // const countDownDate = new Date('Aug 10,2022').getTime();
+    console.log(countDownDate);
 
     interval = setInterval(() => {
       const now = new Date().getTime();
       const gap = countDownDate - now;
-      console.log(gap);
+      // console.log(gap);
       const days = Math.floor(gap / (24 * 60 * 60 * 1000));
       const hours = Math.floor(
         (gap % (24 * 60 * 60 * 1000)) / (1000 * 60 * 60)
@@ -78,10 +80,10 @@ const Home = () => {
     });
   };
   useEffect(() => {
-    fetchData();
+    fetchPrize();
     fetchDate();
     startTimer();
-  }, [countdownEnd]);
+  }, []);
 
   return (
     <Container>
@@ -102,8 +104,8 @@ const Home = () => {
           </ButtonDiv>
         </Div>
         {/* <ApproveButton onClick={() => handleApprove()}>Approve</ApproveButton> */}
-        <h2>PRIZE ACCUMULATED</h2>
-        <h3>{prize} TT</h3>
+        <h2>PRIZE ACCUMULATED: {prize / 10 ** 18} TT</h2>
+        {/* <h3>{prize / 10 ** 18} TT</h3> */}
 
         <p>
           Click the button to become the<b> new leader</b>

@@ -16,8 +16,9 @@ export const connectMetamask = async (setAccountAddress) => {
         method: 'eth_requestAccounts',
       });
       selectedAccount = accounts[0];
-      setAccountAddress(accounts[0]);
+      setAccountAddress(selectedAccount);
       console.log(`selected account is ${selectedAccount}`);
+      localStorage.setItem('loggedIn', selectedAccount);
     } catch (error) {
       console.log(error);
       return;
@@ -67,5 +68,8 @@ export const approve = async () => {
 };
 
 export const getCountdownEnd = async () => {
+  if (!isInitialized) {
+    await connectMetamask();
+  }
   return cbContract.methods.countdownEnd().call();
 };
