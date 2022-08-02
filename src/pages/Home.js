@@ -3,14 +3,21 @@ import styled from 'styled-components';
 import {
   approve,
   buttonClicked,
-  getNewCountdownEnd,
+  getCountdownEnd,
   getPrize,
 } from '../utils/Web3';
 import CountdownTimer from '../components/CountdownTimer';
 
 const Home = () => {
   const [prize, setPrize] = useState(0);
-  const [countdownEnd, setCountdownEnd] = useState();
+  const [countdownEnd, setCountdownEnd] = useState(0);
+
+  const [timerDays, setTimerDays] = useState(0);
+  const [timerHours, setTimerHours] = useState(0);
+  const [timerMinutes, setTimerMinutes] = useState(0);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+
+  let interval;
 
   const fetchData = async () => {
     getPrize()
@@ -20,47 +27,84 @@ const Home = () => {
       .catch((err) => {
         console.log(err);
       });
+  };
 
-    console.log(prize);
+  const fetchDate = async () => {
+    try {
+      const date = await getCountdownEnd();
+      setCountdownEnd(date);
+      console.log(countdownEnd);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const fetchDate = () => {
-    getNewCountdownEnd()
-      .then((countdownEnd) => {
-        setCountdownEnd(countdownEnd);
-        console.log(countdownEnd);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+  const handleApprove = async () => {
+    await approve();
   };
+
   const handleClick = async () => {
     try {
-      await approve();
+      await handleApprove();
       buttonClicked();
     } catch (error) {}
+  };
+
+  const startTimer = () => {
+    const countDownDate = countdownEnd * 1000;
+    console.log('entered timer2', countDownDate);
+
+    interval = setInterval(() => {
+      const now = new Date().getTime();
+      const gap = countDownDate - now;
+      console.log(gap);
+      const days = Math.floor(gap / (24 * 60 * 60 * 1000));
+      const hours = Math.floor(
+        (gap % (24 * 60 * 60 * 1000)) / (1000 * 60 * 60)
+      );
+      const minutes = Math.floor((gap % (60 * 60 * 1000)) / (1000 * 60));
+      const seconds = Math.floor((gap % (60 * 1000)) / 1000);
+
+      if (gap < 0) {
+        //stop timer
+        clearInterval(interval.current);
+      } else {
+        //update
+        setTimerDays(days);
+        setTimerHours(hours);
+        setTimerMinutes(minutes);
+        setTimerSeconds(seconds);
+      }
+    });
   };
   useEffect(() => {
     fetchData();
     fetchDate();
-    // approve();
-  }, []);
+    startTimer();
+  }, [countdownEnd]);
 
   return (
     <Container>
       <Content>
         <h1>Button</h1>
         <h2>COUNT DOWN</h2>
-        <p>{new Date(parseInt(countdownEnd) * 1000).toLocaleString()}</p>
-        <CountdownTimer countdownEnd={countdownEnd} />
-
-        <h2>PRIZE ACCUMULATED</h2>
-        <h3>{prize} TT</h3>
+        <p>{countdownEnd}</p>
+        <CountdownTimer
+          timerDays={timerDays}
+          timerHours={timerHours}
+          timerMinutes={timerMinutes}
+          timerSeconds={timerSeconds}
+        />
 
         <Div>
           <ButtonDiv>
             <Button onClick={() => handleClick()}></Button>
           </ButtonDiv>
         </Div>
+        {/* <ApproveButton onClick={() => handleApprove()}>Approve</ApproveButton> */}
+        <h2>PRIZE ACCUMULATED</h2>
+        <h3>{prize} TT</h3>
+
         <p>
           Click the button to become the<b> new leader</b>
         </p>

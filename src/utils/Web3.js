@@ -8,8 +8,6 @@ let cbContract;
 let selectedAccount;
 let isInitialized = false;
 
-let currentBalance;
-
 export const connectMetamask = async (setAccountAddress) => {
   let provider = window.ethereum;
   if (typeof provider !== 'undefined') {
@@ -27,11 +25,11 @@ export const connectMetamask = async (setAccountAddress) => {
     const web3 = new Web3(provider);
     ttContract = new web3.eth.Contract(
       TestTokenBuild.abi,
-      '0x89e662325BE902fEbc72367e4c2a877D5F50C7f3'
+      '0x8127499D2225e4003BB8b9930E9d208d826E0105'
     );
     cbContract = new web3.eth.Contract(
       CountdownButtonBuild.abi,
-      '0x31E2720da985A183674e9EA240ACfCDea7b846fa'
+      '0x8F0B78A3Eb8f0Cb6F0B2f83E49AeE23AaF379b23'
     );
     isInitialized = true;
 
@@ -47,25 +45,20 @@ export const buttonClicked = async () => {
     from: selectedAccount,
   });
 };
+
 export const getPrize = async () => {
   return ttContract.methods
-    .balanceOf('0x31e2720da985a183674e9ea240acfcdea7b846fa')
+    .balanceOf('0x8F0B78A3Eb8f0Cb6F0B2f83E49AeE23AaF379b23')
     .call();
 };
-const checkBalance = async () => {
-  if (!isInitialized) {
-    await connectMetamask();
-  }
-  currentBalance = await ttContract.methods.balanceOf(selectedAccount).call();
-};
+
 export const approve = async () => {
   if (!isInitialized) {
     await connectMetamask();
   }
-
   return ttContract.methods
     .approve(
-      '0x31e2720da985a183674e9ea240acfcdea7b846fa',
+      '0x8F0B78A3Eb8f0Cb6F0B2f83E49AeE23AaF379b23',
       '20000000000000000000'
     )
     .send({
@@ -73,9 +66,6 @@ export const approve = async () => {
     });
 };
 
-export const getNewCountdownEnd = async () => {
-  if (!isInitialized) {
-    await connectMetamask();
-  }
-  return cbContract.methods.newCountdownEnd().call();
+export const getCountdownEnd = async () => {
+  return cbContract.methods.countdownEnd().call();
 };
