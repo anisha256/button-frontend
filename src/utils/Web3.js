@@ -8,6 +8,16 @@ let cbContract;
 let selectedAccount;
 let isInitialized = false;
 
+const web3 = new Web3(window.ethereum);
+ttContract = new web3.eth.Contract(
+  TestTokenBuild.abi,
+  '0x8127499D2225e4003BB8b9930E9d208d826E0105'
+);
+cbContract = new web3.eth.Contract(
+  CountdownButtonBuild.abi,
+  '0x8F0B78A3Eb8f0Cb6F0B2f83E49AeE23AaF379b23'
+);
+
 export const connectMetamask = async (setAccountAddress) => {
   let provider = window.ethereum;
   if (typeof provider !== 'undefined') {
@@ -23,17 +33,7 @@ export const connectMetamask = async (setAccountAddress) => {
       console.log(error);
       return;
     }
-    const web3 = new Web3(provider);
-    ttContract = new web3.eth.Contract(
-      TestTokenBuild.abi,
-      '0x8127499D2225e4003BB8b9930E9d208d826E0105'
-    );
-    cbContract = new web3.eth.Contract(
-      CountdownButtonBuild.abi,
-      '0x8F0B78A3Eb8f0Cb6F0B2f83E49AeE23AaF379b23'
-    );
     isInitialized = true;
-
     console.log(isInitialized);
   }
 };
@@ -48,7 +48,7 @@ export const buttonClicked = async () => {
 };
 
 export const getPrize = async () => {
-  return ttContract.methods
+  return await ttContract.methods
     .balanceOf('0x8F0B78A3Eb8f0Cb6F0B2f83E49AeE23AaF379b23')
     .call();
 };

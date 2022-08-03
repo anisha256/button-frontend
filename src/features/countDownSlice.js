@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 // import { getPrize, getCountdownEnd } from '../utils/Web3';
 
 // export const update = createAsyncThunk();
@@ -27,18 +27,29 @@ const countDownSlice = createSlice({
     updateStart: (state) => {
       state.isLoading = true;
     },
-    updateCountDownEnd: (state, action) => {
+    updateCountDown: (state, action) => {
+      state.isLoading = false;
       state.countDownEnd = action.payload;
-      // console.log('state.countDownEnd', state.countDownEnd);
+    },
+    updatePrize: (state, action) => {
+      state.isLoading = false;
+      state.prize = action.payload;
     },
     updateError: (state) => {
       state.isError = true;
+      state.isLoading = false;
     },
   },
 });
 
 console.log(countDownSlice);
 
-export const { clearCountDown, updateCountDownEnd } = countDownSlice.actions;
+export const {
+  updateStart,
+  updateError,
+  clearCountDown,
+  updateCountDown,
+  updatePrize,
+} = countDownSlice.actions;
 
 export default countDownSlice.reducer;

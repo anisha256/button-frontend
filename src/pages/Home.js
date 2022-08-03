@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  approve,
-  buttonClicked,
-  // getCountdownEnd,
-} from '../utils/Web3';
+import { approve, buttonClicked } from '../utils/Web3';
 import CountdownTimer from '../components/CountdownTimer';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateCountdown } from '../redux/apiCalls';
+import { updateCountdown, updatePrizepool } from '../redux/apiCalls';
 
 const Home = () => {
   const { prize, countDownEnd } = useSelector((state) => state.countDown);
@@ -15,17 +11,8 @@ const Home = () => {
 
   const fetchDate = () => {
     updateCountdown(countDownEnd, dispatch);
+    updatePrizepool(prize, dispatch);
   };
-
-  // const fetchDate = () => {
-  //   getCountdownEnd()
-  //     .then((countdownEnd) => {
-  //       setCountdownEnd(countdownEnd);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
 
   const handleApprove = async () => {
     await approve();
@@ -39,7 +26,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    // fetchPrize();
     fetchDate();
   }, []);
 
@@ -49,18 +35,13 @@ const Home = () => {
         <h1>Button</h1>
         <h2>COUNT DOWN</h2>
         <p>{countDownEnd}</p>
-
         <CountdownTimer />
-
         <Div>
           <ButtonDiv>
             <Button onClick={() => handleClick()}></Button>
           </ButtonDiv>
         </Div>
-
-        {/* <h2>PRIZE ACCUMULATED: {prize / 10 ** 18} TT</h2> */}
-        <h2>PRIZE ACCUMULATED: {prize} TT</h2>
-
+        <h2>PRIZE ACCUMULATED: {prize / 10 ** 18} TT</h2>
         <p>
           Click the button to become the<b> new leader</b>
         </p>
