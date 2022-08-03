@@ -67,9 +67,6 @@ export const approve = async () => {
     });
 };
 
-export const getCountdownEnd = async () => {
-  if (!isInitialized) {
-    await connectMetamask();
-  }
+export const getCountdownEnd = () => {
   return cbContract.methods.countdownEnd().call();
 };

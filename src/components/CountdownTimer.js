@@ -1,12 +1,45 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
-const CountdownTimer = ({
-  timerDays,
-  timerHours,
-  timerMinutes,
-  timerSeconds,
-}) => {
+const CountdownTimer = () => {
+  const { timerDays, timerHours, timerMinutes, timerSeconds } = useSelector(
+    (state) => state.countDown
+  );
+  // let interval;
+  // const startTimer = () => {
+  // const countDownDate = countdownEnd * 1000;
+  // console.log('entered timer2', countDownDate);
+  // const countDownDate = new Date('Aug 10,2022').getTime();
+  // console.log(countDownDate);
+
+  // interval = setInterval(() => {
+  //   const now = new Date().getTime();
+  // const gap = countDownDate - now;
+  // console.log(gap);
+  // const days = Math.floor(gap / (24 * 60 * 60 * 1000));
+  // const hours = Math.floor(
+  //   (gap % (24 * 60 * 60 * 1000)) / (1000 * 60 * 60)
+  // );
+  // const minutes = Math.floor((gap % (60 * 60 * 1000)) / (1000 * 60));
+  // const seconds = Math.floor((gap % (60 * 1000)) / 1000);
+
+  // if (gap < 0) {
+  //   //stop timer
+  //   clearInterval(interval.current);
+  // } else {
+  //update
+  // setTimerDays(days);
+  // setTimerHours(hours);
+  // setTimerMinutes(minutes);
+  // setTimerSeconds(seconds);
+  //     }
+  //   });
+  // };
+  useEffect(() => {
+    // startTimer();
+  }, []);
+
   return (
     <Fragment>
       <TimerContainer>

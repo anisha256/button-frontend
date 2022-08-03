@@ -3,41 +3,29 @@ import styled from 'styled-components';
 import {
   approve,
   buttonClicked,
-  getCountdownEnd,
-  getPrize,
+  // getCountdownEnd,
 } from '../utils/Web3';
 import CountdownTimer from '../components/CountdownTimer';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateCountdown } from '../redux/apiCalls';
 
 const Home = () => {
-  const [prize, setPrize] = useState(0);
-  const [countdownEnd, setCountdownEnd] = useState(0);
-
-  const [timerDays, setTimerDays] = useState(0);
-  const [timerHours, setTimerHours] = useState(0);
-  const [timerMinutes, setTimerMinutes] = useState(0);
-  const [timerSeconds, setTimerSeconds] = useState(0);
-
-  let interval;
-
-  const fetchPrize = () => {
-    getPrize()
-      .then((prize) => {
-        setPrize(prize);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const { prize, countDownEnd } = useSelector((state) => state.countDown);
+  const dispatch = useDispatch();
 
   const fetchDate = () => {
-    getCountdownEnd()
-      .then((countdownEnd) => {
-        setCountdownEnd(countdownEnd);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    updateCountdown(countDownEnd, dispatch);
   };
+
+  // const fetchDate = () => {
+  //   getCountdownEnd()
+  //     .then((countdownEnd) => {
+  //       setCountdownEnd(countdownEnd);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   const handleApprove = async () => {
     await approve();
@@ -50,39 +38,9 @@ const Home = () => {
     } catch (error) {}
   };
 
-  const startTimer = () => {
-    const countDownDate = countdownEnd * 1000;
-    // console.log('entered timer2', countDownDate);
-    // const countDownDate = new Date('Aug 10,2022').getTime();
-    console.log(countDownDate);
-
-    interval = setInterval(() => {
-      const now = new Date().getTime();
-      const gap = countDownDate - now;
-      // console.log(gap);
-      const days = Math.floor(gap / (24 * 60 * 60 * 1000));
-      const hours = Math.floor(
-        (gap % (24 * 60 * 60 * 1000)) / (1000 * 60 * 60)
-      );
-      const minutes = Math.floor((gap % (60 * 60 * 1000)) / (1000 * 60));
-      const seconds = Math.floor((gap % (60 * 1000)) / 1000);
-
-      if (gap < 0) {
-        //stop timer
-        clearInterval(interval.current);
-      } else {
-        //update
-        setTimerDays(days);
-        setTimerHours(hours);
-        setTimerMinutes(minutes);
-        setTimerSeconds(seconds);
-      }
-    });
-  };
   useEffect(() => {
-    fetchPrize();
+    // fetchPrize();
     fetchDate();
-    startTimer();
   }, []);
 
   return (
@@ -90,22 +48,18 @@ const Home = () => {
       <Content>
         <h1>Button</h1>
         <h2>COUNT DOWN</h2>
-        <p>{countdownEnd}</p>
-        <CountdownTimer
-          timerDays={timerDays}
-          timerHours={timerHours}
-          timerMinutes={timerMinutes}
-          timerSeconds={timerSeconds}
-        />
+        <p>{countDownEnd}</p>
+
+        <CountdownTimer />
 
         <Div>
           <ButtonDiv>
             <Button onClick={() => handleClick()}></Button>
           </ButtonDiv>
         </Div>
-        {/* <ApproveButton onClick={() => handleApprove()}>Approve</ApproveButton> */}
-        <h2>PRIZE ACCUMULATED: {prize / 10 ** 18} TT</h2>
-        {/* <h3>{prize / 10 ** 18} TT</h3> */}
+
+        {/* <h2>PRIZE ACCUMULATED: {prize / 10 ** 18} TT</h2> */}
+        <h2>PRIZE ACCUMULATED: {prize} TT</h2>
 
         <p>
           Click the button to become the<b> new leader</b>
